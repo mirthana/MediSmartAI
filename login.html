@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSmartAI - Admin Login</title>
+
+```
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f4f7fb;
+    }
+
+    .login-container {
+        width: 400px;
+        background: white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.10);
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 30px;
+        font-weight: bold;
+        color: #123b5d;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        text-align: center;
+        color: #78909c;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        text-align: center;
+        color: #263238;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: bold;
+        color: #455a64;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d5dfe7;
+        border-radius: 8px;
+        font-size: 14px;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #1e88c8;
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 13px;
+        border: none;
+        border-radius: 8px;
+        background: #1e88c8;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    .login-btn:hover {
+        background: #156fa5;
+    }
+
+    .error {
+        background: #ffebee;
+        color: #c62828;
+        padding: 10px;
+        border-radius: 7px;
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+    .footer {
+        text-align: center;
+        color: #90a4ae;
+        font-size: 12px;
+        margin-top: 25px;
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="login-container">
+
+    <div class="logo">💊 MediSmartAI</div>
+
+    <p class="subtitle">Smart Medicine Management System</p>
+
+    <h2>Admin Login</h2>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form action="/login" method="POST">
+
+        <div class="form-group">
+            <label>Username</label>
+            <input
+                type="text"
+                name="username"
+                placeholder="Enter username"
+                required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                required>
+        </div>
+
+        <button type="submit" class="login-btn">
+            Login
+        </button>
+
+    </form>
+
+    <div class="footer">
+        © 2026 MediSmartAI
+    </div>
+
+</div>
+```
+
+</body>
+</html>

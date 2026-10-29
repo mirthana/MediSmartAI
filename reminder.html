@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Medicine Reminder - MediSmart</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        width: 560px;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    h2 {
+        margin-top: 35px;
+        color: #333;
+        text-align: center;
+    }
+
+    label {
+        display: block;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 11px;
+        margin-top: 6px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-sizing: border-box;
+    }
+
+    .date-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .date-row > div {
+        flex: 1;
+    }
+
+    .slots-box {
+        margin-top: 8px;
+        display: flex;
+        gap: 10px;
+    }
+
+    .slot-option {
+        flex: 1;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 12px 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .slot-option input {
+        width: auto;
+        margin: 0 0 6px 0;
+    }
+
+    .slot-option label {
+        margin: 0;
+        font-weight: normal;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    .slot-option .slot-time {
+        display: block;
+        color: #78909c;
+        font-size: 12px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 25px;
+        border: none;
+        border-radius: 6px;
+        background: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #0056b3;
+    }
+
+    .back {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    .error-banner {
+        margin-top: 15px;
+        padding: 12px 15px;
+        border-radius: 8px;
+        background: #fdecec;
+        border-left: 5px solid #e74c3c;
+        color: #7a2020;
+        font-size: 14px;
+    }
+
+    /* Saved reminders */
+    .reminders {
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background: #007bff;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background: #f8f8f8;
+    }
+
+    .status-pill {
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .status-Active {
+        background: #e8f7ee;
+        color: #256029;
+    }
+
+    .status-Upcoming {
+        background: #fff6e0;
+        color: #8a6d00;
+    }
+
+    .status-Completed {
+        background: #f1f1f1;
+        color: #777;
+    }
+
+    .no-reminders {
+        text-align: center;
+        color: #777;
+        margin-top: 15px;
+    }
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>💊 Medicine Reminder</h1>
+
+{% if error %}
+<div class="error-banner">⚠️ {{ error }}</div>
+{% endif %}
+
+<!-- ADD REMINDER FORM -->
+
+<form method="POST" action="/reminder">
+
+    <label>Patient Name</label>
+    <input type="text"
+           name="patient_name"
+           placeholder="Enter patient name"
+           required>
+
+    <label>Medicine Name</label>
+    <input type="text"
+           name="medicine_name"
+           placeholder="Enter medicine name"
+           required>
+
+    <label>Phone Number</label>
+    <input type="tel"
+           name="phone_number"
+           placeholder="Enter phone number"
+           required>
+
+    <div class="date-row">
+
+        <div>
+            <label>Start Date</label>
+            <input type="date" name="start_date" required>
+        </div>
+
+        <div>
+            <label>End Date</label>
+            <input type="date" name="end_date" required>
+        </div>
+
+    </div>
+
+    <label>Reminder Times</label>
+
+    <div class="slots-box">
+
+        {% for slot_name, slot_time in slot_times.items() %}
+
+        <div class="slot-option">
+            <input type="checkbox"
+                   name="slots[]"
+                   value="{{ slot_name }}"
+                   id="slot-{{ slot_name }}">
+            <label for="slot-{{ slot_name }}">
+                {{ slot_name }}
+                <span class="slot-time">{{ slot_time }}</span>
+            </label>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <label>Notification Type</label>
+    <select name="notification_type" required>
+        <option value="">Select notification</option>
+        <option value="SMS">SMS</option>
+        <option value="Phone Call">Phone Call</option>
+    </select>
+
+    <button type="submit">
+        Save Reminder
+    </button>
+
+</form>
+
+
+<!-- SAVED REMINDERS -->
+
+<h2>📋 Saved Reminders</h2>
+
+{% if reminders %}
+
+<div class="reminders">
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Medicine</th>
+                <th>Phone</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Slots</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for reminder in reminders %}
+
+            <tr>
+                <td>{{ reminder.patient_name }}</td>
+                <td>{{ reminder.medicine_name }}</td>
+                <td>{{ reminder.phone_number }}</td>
+                <td>{{ reminder.start_date or '-' }}</td>
+                <td>{{ reminder.end_date or '-' }}</td>
+                <td>{{ reminder.slots or reminder.reminder_time }}</td>
+                <td>
+                    <span class="status-pill status-{{ reminder.status }}">
+                        {{ reminder.status }}
+                    </span>
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% else %}
+
+<p class="no-reminders">
+    No reminders saved yet.
+</p>
+
+{% endif %}
+
+
+<a href="/dashboard" class="back">
+    ← Back to Dashboard
+</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>MediSmartAI - Bill #{{ bill.id }}</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: #123b5d;
+            padding: 25px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #1e88c8;
+        }
+
+        .main {
+            margin-left: 270px;
+            padding: 35px;
+        }
+
+        .receipt-box {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            max-width: 650px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #cfd8dc;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .receipt-header h1 {
+            color: #123b5d;
+            margin-bottom: 5px;
+        }
+
+        .receipt-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            color: #455a64;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            background: #eef5fa;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #edf1f4;
+        }
+
+        .grand-total {
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+            color: #123b5d;
+            border-top: 2px dashed #cfd8dc;
+            padding-top: 15px;
+        }
+
+        .action-buttons {
+            margin-top: 25px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-buttons a, .action-buttons button {
+            padding: 12px 22px;
+            border-radius: 7px;
+            font-weight: bold;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .print-button {
+            background: #1e88c8;
+            color: white;
+        }
+
+        .new-bill-button {
+            background: #eef5fa;
+            color: #123b5d;
+        }
+
+        @media print {
+
+            .sidebar, .action-buttons {
+                display: none;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>💊 MediSmartAI</h2>
+
+        <a href="/dashboard">📊 Dashboard</a>
+        <a href="/medicines">💊 Medicines</a>
+        <a href="/prediction">🤖 AI Prediction</a>
+        <a href="/dashboard#medicine-reminder">🔔 Medicine Reminder</a>
+        <a href="/alert_settings">🚨 Alert Settings</a>
+        <a href="/billing">🧾 Billing</a>
+        <a href="/sales_history">📜 Sales History</a>
+        <a href="/reports">📈 Reports</a>
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+
+    <div class="main">
+
+        <div class="receipt-box">
+
+            <div class="receipt-header">
+                <h1>💊 MediSmartAI</h1>
+                <p>Pharmacy Bill Receipt</p>
+            </div>
+
+            <div class="receipt-meta">
+                <div>
+                    <strong>Bill #:</strong> {{ bill.id }}<br>
+                    <strong>Date:</strong> {{ bill.bill_date }}
+                </div>
+                <div>
+                    <strong>Customer:</strong> {{ bill.customer_name }}<br>
+                    {% if bill.customer_phone %}
+                    <strong>Phone:</strong> {{ bill.customer_phone }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.medicine_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>₹{{ item.unit_price }}</td>
+                        <td>₹{{ item.subtotal }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <div class="grand-total">
+                Total: ₹{{ bill.total_amount }}
+            </div>
+
+            <div class="action-buttons">
+                <button class="print-button" onclick="window.print()">🖨️ Print</button>
+                <a class="new-bill-button" href="/billing">➕ New Bill</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

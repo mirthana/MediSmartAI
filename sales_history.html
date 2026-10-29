@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>MediSmartAI - Sales History</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: #123b5d;
+            padding: 25px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1e88c8;
+        }
+
+        .main {
+            margin-left: 270px;
+            padding: 35px;
+        }
+
+        .main h1 {
+            color: #123b5d;
+        }
+
+        .main > p {
+            color: #78909c;
+            margin-top: 7px;
+        }
+
+        .table-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            margin-top: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #eef5fa;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #edf1f4;
+        }
+
+        .view-link {
+            color: #1e88c8;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: #90a4ae;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>💊 MediSmartAI</h2>
+
+        <a href="/dashboard">📊 Dashboard</a>
+        <a href="/medicines">💊 Medicines</a>
+        <a href="/prediction">🤖 AI Prediction</a>
+        <a href="/dashboard#medicine-reminder">🔔 Medicine Reminder</a>
+        <a href="/alert_settings">🚨 Alert Settings</a>
+        <a href="/billing">🧾 Billing</a>
+        <a href="/sales_history" class="active">📜 Sales History</a>
+        <a href="/reports">📈 Reports</a>
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+
+    <div class="main">
+
+        <h1>Sales History</h1>
+        <p>Every bill generated, most recent first.</p>
+
+        <div class="table-box">
+
+            {% if bills %}
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Bill #</th>
+                        <th>Date</th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for bill in bills %}
+                    <tr>
+                        <td>{{ bill.id }}</td>
+                        <td>{{ bill.bill_date }}</td>
+                        <td>{{ bill.customer_name }}</td>
+                        <td>{{ bill.customer_phone or '-' }}</td>
+                        <td>₹{{ bill.total_amount }}</td>
+                        <td><a class="view-link" href="/bill/{{ bill.id }}">View / Print</a></td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            {% else %}
+
+            <div class="empty-state">
+                No bills yet. <a href="/billing">Create your first bill</a>.
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+</html>

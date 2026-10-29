@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>MediSmartAI - Alert Settings</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: #123b5d;
+            padding: 25px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1e88c8;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 270px;
+            padding: 35px;
+        }
+
+        .main h1 {
+            color: #123b5d;
+        }
+
+        .main > p {
+            color: #78909c;
+            margin-top: 7px;
+        }
+
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            margin-top: 25px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #123b5d;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group input[type="time"],
+        .form-group input[type="number"] {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-row input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-row label {
+            font-weight: bold;
+            color: #123b5d;
+        }
+
+        .hint {
+            font-size: 13px;
+            color: #78909c;
+            margin-top: 6px;
+        }
+
+        .save-button {
+            padding: 14px 30px;
+            background: #1e88c8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #123b5d;
+        }
+
+        .status-banner {
+            margin-top: 25px;
+            max-width: 600px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background: #e8f7ee;
+            border-left: 5px solid #2e7d32;
+            color: #256029;
+        }
+
+        .status-banner.off {
+            background: #fdecec;
+            border-left: 5px solid #e74c3c;
+            color: #7a2020;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>💊 MediSmartAI</h2>
+
+        <a href="/dashboard">📊 Dashboard</a>
+
+        <a href="/medicines">💊 Medicines</a>
+
+        <a href="/prediction">🤖 AI Prediction</a>
+
+        <a href="/dashboard#medicine-reminder">🔔 Medicine Reminder</a>
+
+        <a href="/alert_settings" class="active">🚨 Alert Settings</a>
+
+        <a href="/billing">🧾 Billing</a>
+
+        <a href="/sales_history">📜 Sales History</a>
+
+        <a href="/reports">📈 Reports</a>
+
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main">
+
+        <h1>Inventory Alert Settings</h1>
+
+        <p>Get an automatic SMS whenever medicines run low on stock or are close to expiring — no need to check the dashboard yourself.</p>
+
+
+        {% if settings and settings.admin_phone %}
+
+            <div class="status-banner">
+                ✅ Alerts are configured. A daily check runs at
+                {{ settings.alert_time }} and texts
+                {{ settings.admin_phone }} if there's anything to report.
+            </div>
+
+        {% else %}
+
+            <div class="status-banner off">
+                ⚠️ No admin phone number set yet — alerts won't be sent until you save one below.
+            </div>
+
+        {% endif %}
+
+
+        <div class="form-box">
+
+            <form method="POST" action="/alert_settings">
+
+                <div class="form-group">
+
+                    <label>Admin / Pharmacist Phone Number</label>
+
+                    <input
+                        type="tel"
+                        name="admin_phone"
+                        placeholder="Enter phone number"
+                        value="{{ settings.admin_phone if settings else '' }}"
+                        required
+                    >
+
+                    <p class="hint">
+                        10-digit Indian numbers are auto-prefixed with +91.
+                    </p>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Daily Check Time</label>
+
+                    <input
+                        type="time"
+                        name="alert_time"
+                        value="{{ settings.alert_time if settings else '09:00' }}"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Expiry Warning Window (days)</label>
+
+                    <input
+                        type="number"
+                        name="expiry_days_threshold"
+                        min="1"
+                        max="180"
+                        value="{{ settings.expiry_days_threshold if settings else 30 }}"
+                        required
+                    >
+
+                    <p class="hint">
+                        Medicines expiring within this many days will be flagged.
+                    </p>
+
+                </div>
+
+
+                <div class="checkbox-row">
+
+                    <input
+                        type="checkbox"
+                        name="low_stock_enabled"
+                        id="low_stock_enabled"
+                        {% if not settings or settings.low_stock_enabled %}checked{% endif %}
+                    >
+
+                    <label for="low_stock_enabled">
+                        Alert me about low stock
+                    </label>
+
+                </div>
+
+
+                <div class="checkbox-row">
+
+                    <input
+                        type="checkbox"
+                        name="expiry_enabled"
+                        id="expiry_enabled"
+                        {% if not settings or settings.expiry_enabled %}checked{% endif %}
+                    >
+
+                    <label for="expiry_enabled">
+                        Alert me about expiring medicines
+                    </label>
+
+                </div>
+
+
+                <button type="submit" class="save-button">
+                    💾 Save Alert Settings
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>MediSmartAI - Create Bill</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: #123b5d;
+            padding: 25px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #1e88c8;
+        }
+
+        .main {
+            margin-left: 270px;
+            padding: 35px;
+        }
+
+        .main h1 {
+            color: #123b5d;
+        }
+
+        .main > p {
+            color: #78909c;
+            margin-top: 7px;
+        }
+
+        .form-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            margin-top: 25px;
+            max-width: 800px;
+        }
+
+        .customer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #123b5d;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        th {
+            background: #eef5fa;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #edf1f4;
+        }
+
+        td select, td input {
+            width: 100%;
+        }
+
+        .remove-row {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .add-row-button {
+            background: #eef5fa;
+            color: #123b5d;
+            border: 1px dashed #1e88c8;
+            padding: 10px 20px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #123b5d;
+        }
+
+        .save-button {
+            padding: 14px 30px;
+            background: #1e88c8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #123b5d;
+        }
+
+        .error-banner {
+            margin-top: 20px;
+            max-width: 800px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background: #fdecec;
+            border-left: 5px solid #e74c3c;
+            color: #7a2020;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .customer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="sidebar">
+
+        <h2>💊 MediSmartAI</h2>
+
+        <a href="/dashboard">📊 Dashboard</a>
+
+        <a href="/medicines">💊 Medicines</a>
+
+        <a href="/prediction">🤖 AI Prediction</a>
+
+        <a href="/dashboard#medicine-reminder">🔔 Medicine Reminder</a>
+
+        <a href="/alert_settings">🚨 Alert Settings</a>
+
+        <a href="/billing" class="active">🧾 Billing</a>
+
+        <a href="/sales_history">📜 Sales History</a>
+
+        <a href="/reports">📈 Reports</a>
+
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+
+    <div class="main">
+
+        <h1>Create Bill</h1>
+
+        <p>Select medicines and quantities to generate a bill. Stock is deducted automatically.</p>
+
+
+        {% if error %}
+
+            <div class="error-banner">
+                ⚠️ {{ error }}
+            </div>
+
+        {% endif %}
+
+
+        <div class="form-box">
+
+            <form method="POST" action="/billing" id="billing-form">
+
+                <div class="customer-grid">
+
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" name="customer_name" placeholder="Enter customer name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" name="customer_phone" placeholder="Optional">
+                    </div>
+
+                </div>
+
+
+                <table id="items-table">
+
+                    <thead>
+                        <tr>
+                            <th>Medicine</th>
+                            <th style="width:100px;">Quantity</th>
+                            <th style="width:100px;">Price</th>
+                            <th style="width:110px;">Subtotal</th>
+                            <th style="width:70px;"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="items-body">
+                        <!-- rows injected by JS -->
+                    </tbody>
+
+                </table>
+
+                <button type="button" class="add-row-button" onclick="addRow()">
+                    ➕ Add Medicine
+                </button>
+
+                <div class="total-row">
+                    Total: ₹<span id="grand-total">0.00</span>
+                </div>
+
+                <button type="submit" class="save-button">
+                    🧾 Generate Bill
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const medicines = [
+            {% for medicine in medicines %}
+            {
+                id: {{ medicine.id }},
+                name: {{ medicine.name | tojson }},
+                price: {{ medicine.price }},
+                stock: {{ medicine.quantity }}
+            },
+            {% endfor %}
+        ];
+
+        function buildOptions() {
+
+            let options = '<option value="">Select medicine</option>';
+
+            medicines.forEach(function (m) {
+
+                options += '<option value="' + m.id + '" data-price="' + m.price +
+                    '" data-stock="' + m.stock + '">' +
+                    m.name + ' (Stock: ' + m.stock + ', ₹' + m.price + ')' +
+                    '</option>';
+            });
+
+            return options;
+        }
+
+        function addRow() {
+
+            const tbody = document.getElementById('items-body');
+
+            const row = document.createElement('tr');
+
+            row.innerHTML =
+                '<td><select name="medicine_id[]" onchange="rowChanged(this)">' + buildOptions() + '</select></td>' +
+                '<td><input type="number" name="quantity[]" min="1" value="1" onchange="rowChanged(this)"></td>' +
+                '<td class="unit-price">₹0.00</td>' +
+                '<td class="subtotal">₹0.00</td>' +
+                '<td><button type="button" class="remove-row" onclick="removeRow(this)">✕</button></td>';
+
+            tbody.appendChild(row);
+        }
+
+        function removeRow(button) {
+
+            const row = button.closest('tr');
+
+            row.remove();
+
+            recalcTotal();
+        }
+
+        function rowChanged(el) {
+
+            const row = el.closest('tr');
+
+            const select = row.querySelector('select');
+
+            const qtyInput = row.querySelector('input[type="number"]');
+
+            const selectedOption = select.options[select.selectedIndex];
+
+            const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+
+            const stock = parseInt(selectedOption.getAttribute('data-stock')) || 0;
+
+
+            if (qtyInput.value > stock && stock > 0) {
+                qtyInput.value = stock;
+            }
+
+            const qty = parseInt(qtyInput.value) || 0;
+
+            const subtotal = price * qty;
+
+            row.querySelector('.unit-price').textContent = '₹' + price.toFixed(2);
+
+            row.querySelector('.subtotal').textContent = '₹' + subtotal.toFixed(2);
+
+            recalcTotal();
+        }
+
+        function recalcTotal() {
+
+            let total = 0;
+
+            document.querySelectorAll('#items-body tr').forEach(function (row) {
+
+                const subtotalText = row.querySelector('.subtotal').textContent.replace('₹', '');
+
+                total += parseFloat(subtotalText) || 0;
+            });
+
+            document.getElementById('grand-total').textContent = total.toFixed(2);
+        }
+
+        // Start with one row
+        addRow();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Edit Medicine - MediSmartAI</title>
+
+<style>
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f7fb;
+    }
+
+    .container {
+        width: 600px;
+        max-width: 90%;
+        margin: 60px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: #123b5d;
+        margin-bottom: 25px;
+    }
+
+    label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #455a64;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccd6dd;
+        border-radius: 7px;
+        box-sizing: border-box;
+    }
+
+    button {
+        margin-top: 25px;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 7px;
+        background: #1e88c8;
+        color: white;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    button:hover {
+        background: #156fa3;
+    }
+
+    .back {
+        display: inline-block;
+        margin-left: 10px;
+        text-decoration: none;
+        color: #123b5d;
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<h1>✏️ Edit Medicine</h1>
+
+<form
+    action="/edit_medicine/{{ medicine.id }}"
+    method="POST"
+>
+
+    <label>Medicine Name</label>
+
+    <input
+        type="text"
+        name="name"
+        value="{{ medicine.name }}"
+        required
+    >
+
+
+    <label>Category</label>
+
+    <select name="category" required>
+
+        <option value="Tablet"
+            {% if medicine.category == "Tablet" %}selected{% endif %}>
+            Tablet
+        </option>
+
+        <option value="Capsule"
+            {% if medicine.category == "Capsule" %}selected{% endif %}>
+            Capsule
+        </option>
+
+        <option value="Syrup"
+            {% if medicine.category == "Syrup" %}selected{% endif %}>
+            Syrup
+        </option>
+
+        <option value="Injection"
+            {% if medicine.category == "Injection" %}selected{% endif %}>
+            Injection
+        </option>
+
+        <option value="Other"
+            {% if medicine.category == "Other" %}selected{% endif %}>
+            Other
+        </option>
+
+    </select>
+
+
+    <label>Quantity</label>
+
+    <input
+        type="number"
+        name="quantity"
+        value="{{ medicine.quantity }}"
+        min="0"
+        required
+    >
+
+
+    <label>Minimum Stock</label>
+
+    <input
+        type="number"
+        name="minimum_stock"
+        value="{{ medicine.minimum_stock }}"
+        min="0"
+        required
+    >
+
+
+    <label>Expiry Date</label>
+
+    <input
+        type="date"
+        name="expiry_date"
+        value="{{ medicine.expiry_date }}"
+        required
+    >
+
+
+    <label>Price</label>
+
+    <input
+        type="number"
+        name="price"
+        value="{{ medicine.price }}"
+        min="0"
+        step="0.01"
+        required
+    >
+
+
+    <button type="submit">
+        💾 Save Changes
+    </button>
+
+    <a class="back" href="/medicines">
+        Cancel
+    </a>
+
+</form>
+```
+
+</div>
+
+</body>
+
+</html>

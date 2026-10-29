@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MediSmart AI</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">🏥 MediSmart <span>AI</span></div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/medicines">Medicines</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+
+        <div class="hero-content">
+            <h1>
+                Intelligent Medicine Inventory
+                <span>& Demand Prediction</span>
+            </h1>
+
+            <p>
+                An AI-powered system that helps hospitals and pharmacies
+                manage medicine stock, predict future demand, reduce
+                wastage, and monitor expiry dates.
+            </p>
+
+            <a href="/dashboard" class="btn">
+                Explore Dashboard →
+            </a>
+        </div>
+
+        <div class="hero-card">
+            <div class="ai-icon">🤖</div>
+            <h2>AI Powered</h2>
+            <p>Smart Stock • Demand Prediction • Expiry Alerts</p>
+        </div>
+
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

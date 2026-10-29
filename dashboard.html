@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>MediSmartAI Dashboard</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            width: 220px;
+            height: 100vh;
+            background: #123b5d;
+            padding: 25px;
+        }
+
+        .sidebar h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #1e88c8;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            margin-left: 270px;
+            padding: 35px;
+        }
+
+        .main h1 {
+            color: #123b5d;
+        }
+
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .card h3 {
+            color: #78909c;
+            font-size: 14px;
+        }
+
+        .card p {
+            font-size: 30px;
+            font-weight: bold;
+            color: #123b5d;
+        }
+
+        /* ALERTS */
+        .alerts-container {
+            margin-top: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .alerts-container h2 {
+            color: #123b5d;
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .low-stock {
+            background: #ffe5e5;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .expiry {
+            background: #fff3cd;
+            border-left: 5px solid #f39c12;
+        }
+
+        /* INVENTORY */
+        .inventory {
+            background: white;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #eef5fa;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .low {
+            color: red;
+            font-weight: bold;
+        }
+
+        .good {
+            color: green;
+            font-weight: bold;
+        }
+
+        /* REMINDER SECTION */
+        .reminder-section {
+            background: white;
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .reminder-section h2 {
+            color: #123b5d;
+            margin-bottom: 25px;
+        }
+
+        .reminder-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #123b5d;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        .save-button {
+            grid-column: span 2;
+            padding: 14px;
+            background: #1e88c8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background: #123b5d;
+        }
+
+        /* SAVED REMINDERS */
+        .saved-reminders {
+            margin-top: 35px;
+        }
+
+        .saved-reminders h3 {
+            color: #123b5d;
+            margin-bottom: 15px;
+        }
+
+        .no-reminders {
+            color: #78909c;
+            padding: 15px;
+            background: #f4f7fb;
+            border-radius: 8px;
+        }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reminder-form {
+                grid-template-columns: 1fr;
+            }
+
+            .save-button {
+                grid-column: span 1;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2>💊 MediSmartAI</h2>
+
+        <a href="/dashboard">📊 Dashboard</a>
+
+        <a href="/medicines">💊 Medicines</a>
+
+        <a href="/prediction">🤖 AI Prediction</a>
+
+        <a href="#medicine-reminder">🔔 Medicine Reminder</a>
+
+        <a href="/alert_settings">🚨 Alert Settings</a>
+
+        <a href="/billing">🧾 Billing</a>
+
+        <a href="/sales_history">📜 Sales History</a>
+
+        <a href="/reports">📈 Reports</a>
+
+        <a href="/logout">🚪 Logout</a>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main">
+
+        <h1>Dashboard</h1>
+
+        <p>Welcome to MediSmartAI Admin Dashboard</p>
+
+
+        <!-- DASHBOARD CARDS -->
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Total Medicines</h3>
+
+                <p>{{ total_medicines }}</p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Low Stock</h3>
+
+                <p>{{ low_stock }}</p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Expiring Soon</h3>
+
+                <p>{{ expiring }}</p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Inventory Value</h3>
+
+                <p>₹{{ inventory_value }}</p>
+
+            </div>
+
+        </div>
+
+
+        <!-- INVENTORY ALERTS -->
+
+        <div class="alerts-container">
+
+            <h2>⚠️ Inventory Alerts</h2>
+
+            {% set alert_found = false %}
+
+            {% for medicine in medicines %}
+
+                {% if medicine.quantity <= medicine.minimum_stock %}
+
+                    {% set alert_found = true %}
+
+                    <div class="alert low-stock">
+
+                        <strong>🔴 Low Stock:</strong>
+
+                        {{ medicine.name }}
+
+                        has only {{ medicine.quantity }} units remaining.
+
+                    </div>
+
+                {% endif %}
+
+
+                {% if today <= medicine.expiry_date <= thirty_days %}
+
+                    {% set alert_found = true %}
+
+                    <div class="alert expiry">
+
+                        <strong>🟠 Expiring Soon:</strong>
+
+                        {{ medicine.name }}
+
+                        expires on {{ medicine.expiry_date }}.
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- MEDICINE INVENTORY -->
+
+        <div class="inventory">
+
+            <h2>Medicine Inventory</h2>
+
+            <table>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Medicine</th>
+
+                    <th>Category</th>
+
+                    <th>Quantity</th>
+
+                    <th>Expiry Date</th>
+
+                    <th>Price</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td>{{ medicine.id }}</td>
+
+                    <td>{{ medicine.name }}</td>
+
+                    <td>{{ medicine.category }}</td>
+
+
+                    <td>
+
+                        {% if medicine.quantity <= medicine.minimum_stock %}
+
+                            <span class="low">
+
+                                {{ medicine.quantity }} ⚠️
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="good">
+
+                                {{ medicine.quantity }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>{{ medicine.expiry_date }}</td>
+
+
+                    <td>₹{{ medicine.price }}</td>
+
+
+                    <td>
+
+                        {% if medicine.quantity <= medicine.minimum_stock %}
+
+                            <span style="color:red; font-weight:bold;">
+
+                                ⚠️ Low Stock
+
+                            </span>
+
+                        {% elif medicine.expiry_date <= today %}
+
+                            <span style="color:red; font-weight:bold;">
+
+                                ❌ Expired
+
+                            </span>
+
+                        {% elif medicine.expiry_date <= thirty_days %}
+
+                            <span style="color:orange; font-weight:bold;">
+
+                                ⏰ Expiring Soon
+
+                            </span>
+
+                        {% else %}
+
+                            <span style="color:green; font-weight:bold;">
+
+                                ✓ Good
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="7" style="text-align:center;">
+
+                        No medicines found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+
+        <!-- ============================= -->
+        <!-- MEDICINE REMINDER SECTION -->
+        <!-- ============================= -->
+
+        <div class="reminder-section" id="medicine-reminder">
+
+            <h2>🔔 Medicine Reminder</h2>
+
+
+            <!-- REMINDER FORM -->
+
+            <form method="POST" action="/reminder">
+
+                <div class="reminder-form">
+
+
+                    <!-- PATIENT NAME -->
+
+                    <div class="form-group">
+
+                        <label>Patient Name</label>
+
+                        <input
+                            type="text"
+                            name="patient_name"
+                            placeholder="Enter patient name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- MEDICINE NAME -->
+
+                    <div class="form-group">
+
+                        <label>Medicine Name</label>
+
+                        <input
+                            type="text"
+                            name="medicine_name"
+                            placeholder="Enter medicine name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PHONE NUMBER -->
+
+                    <div class="form-group">
+
+                        <label>Phone Number</label>
+
+                        <input
+                            type="tel"
+                            name="phone_number"
+                            placeholder="Enter phone number"
+                            pattern="[0-9]{10}"
+                            maxlength="10"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- START DATE -->
+
+                    <div class="form-group">
+
+                        <label>Start Date</label>
+
+                        <input
+                            type="date"
+                            name="start_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- END DATE -->
+
+                    <div class="form-group">
+
+                        <label>End Date</label>
+
+                        <input
+                            type="date"
+                            name="end_date"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- REMINDER TIME SLOTS -->
+
+                    <div class="form-group">
+
+                        <label>Reminder Times</label>
+
+                        <div style="display:flex; gap:10px;">
+
+                            {% for slot_name, slot_time in slot_times.items() %}
+
+                            <label style="font-weight:normal; display:flex; align-items:center; gap:5px; border:1px solid #ccc; border-radius:8px; padding:8px 10px; flex:1; justify-content:center;">
+
+                                <input
+                                    type="checkbox"
+                                    name="slots[]"
+                                    value="{{ slot_name }}"
+                                    style="width:auto;"
+                                >
+
+                                {{ slot_name }} ({{ slot_time }})
+
+                            </label>
+
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- NOTIFICATION TYPE -->
+
+                    <div class="form-group">
+
+                        <label>Notification Type</label>
+
+                        <select name="notification_type" required>
+
+                            <option value="">
+                                Select Notification
+                            </option>
+
+                            <option value="SMS">
+                                SMS
+                            </option>
+
+                            <option value="Phone Call">
+                                Phone Call
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SAVE BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="save-button"
+                    >
+
+                        💾 Save Reminder
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <!-- SAVED REMINDERS -->
+
+            <div class="saved-reminders">
+
+                <h3>📋 Saved Reminders</h3>
+
+
+                {% if reminders %}
+
+                <table>
+
+                    <tr>
+
+                        <th>Patient</th>
+
+                        <th>Medicine</th>
+
+                        <th>Phone</th>
+
+                        <th>Start</th>
+
+                        <th>End</th>
+
+                        <th>Slots</th>
+
+                        <th>Status</th>
+
+                        <th>Notification</th>
+
+                    </tr>
+
+
+                    {% for reminder in reminders %}
+
+                    <tr>
+
+                        <td>
+                            {{ reminder.patient_name }}
+                        </td>
+
+                        <td>
+                            {{ reminder.medicine_name }}
+                        </td>
+
+                        <td>
+                            {{ reminder.phone_number }}
+                        </td>
+
+                        <td>
+                            {{ reminder.start_date or '-' }}
+                        </td>
+
+                        <td>
+                            {{ reminder.end_date or '-' }}
+                        </td>
+
+                        <td>
+                            {{ reminder.slots or reminder.reminder_time }}
+                        </td>
+
+                        <td>
+                            {{ reminder.status }}
+                        </td>
+
+                        <td>
+                            {{ reminder.notification_type }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </table>
+
+
+                {% else %}
+
+                    <p class="no-reminders">
+
+                        No reminders saved yet.
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

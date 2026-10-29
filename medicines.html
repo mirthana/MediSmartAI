@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediSmartAI - Medicines</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #263238;
+    }
+
+    .sidebar {
+        position: fixed;
+        width: 230px;
+        height: 100vh;
+        background: #123b5d;
+        padding: 25px 15px;
+    }
+
+    .logo {
+        color: white;
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        margin-bottom: 40px;
+    }
+
+    .logo span {
+        display: block;
+        font-size: 12px;
+        font-weight: normal;
+        margin-top: 6px;
+    }
+
+    .nav a {
+        display: block;
+        color: #dce8f2;
+        text-decoration: none;
+        padding: 13px 15px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+
+    .nav a:hover,
+    .nav .active {
+        background: #1e88c8;
+        color: white;
+    }
+
+    .main {
+        margin-left: 230px;
+        padding: 35px;
+    }
+
+    .header {
+        margin-bottom: 25px;
+    }
+
+    .header h1 {
+        color: #123b5d;
+        font-size: 30px;
+    }
+
+    .header p {
+        color: #78909c;
+        margin-top: 7px;
+    }
+
+    .form-box {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+
+    .form-box h2 {
+        color: #123b5d;
+        margin-bottom: 20px;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d5dde3;
+        border-radius: 7px;
+        outline: none;
+    }
+
+    input:focus,
+    select:focus {
+        border-color: #1e88c8;
+    }
+
+    button {
+        background: #1e88c8;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 7px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 15px;
+    }
+
+    button:hover {
+        background: #156fa3;
+    }
+
+    .table-box {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        overflow-x: auto;
+    }
+
+    .table-box h2 {
+        color: #123b5d;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #eef5fa;
+        padding: 13px;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    td {
+        padding: 13px;
+        border-bottom: 1px solid #edf1f4;
+        font-size: 14px;
+    }
+
+    .low {
+        color: #d84315;
+        font-weight: bold;
+    }
+
+    .good {
+        color: #2e7d32;
+        font-weight: bold;
+    }
+
+    @media (max-width: 900px) {
+        .form-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 650px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        .main {
+            margin-left: 0;
+            padding: 20px;
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">
+        💊 MediSmartAI
+        <span>Smart Medicine Management</span>
+    </div>
+
+    <nav class="nav">
+        <a href="/dashboard">📊 Dashboard</a>
+        <a href="/medicines" class="active">💊 Medicines</a>
+        <a href="/prediction">🤖 AI Prediction</a>
+        <a href="/dashboard#medicine-reminder">🔔 Medicine Reminder</a>
+        <a href="/alert_settings">🚨 Alert Settings</a>
+        <a href="/billing">🧾 Billing</a>
+        <a href="/sales_history">📜 Sales History</a>
+        <a href="/reports">📈 Reports</a>
+        <a href="/logout">🚪 Logout</a>
+    </nav>
+
+</aside>
+
+
+<main class="main">
+
+    <div class="header">
+        <h1>Medicine Management</h1>
+        <p>Add and manage medicines in your inventory.</p>
+    </div>
+
+
+    <!-- Add Medicine -->
+
+    <section class="form-box">
+
+        <h2>➕ Add New Medicine</h2>
+
+        <form action="/add_medicine" method="POST">
+
+            <div class="form-grid">
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Medicine Name"
+                    required
+                >
+
+                <select name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Syrup">Syrup</option>
+                    <option value="Injection">Injection</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <input
+                    type="number"
+                    name="quantity"
+                    placeholder="Quantity"
+                    min="0"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="minimum_stock"
+                    placeholder="Minimum Stock"
+                    min="0"
+                    required
+                >
+
+                <input
+                    type="date"
+                    name="expiry_date"
+                    required
+                >
+
+                <input
+                    type="number"
+                    name="price"
+                    placeholder="Price"
+                    min="0"
+                    step="0.01"
+                    required
+                >
+
+            </div>
+
+            <button type="submit">
+                Add Medicine
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- Medicine List -->
+
+    <section class="table-box">
+
+        <h2>📋 Medicine Inventory</h2>
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Medicine</th>
+                    <th>Category</th>
+                    <th>Quantity</th>
+                    <th>Minimum Stock</th>
+                    <th>Expiry Date</th>
+                    <th>Price</th>
+                    
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for medicine in medicines %}
+
+                <tr>
+
+                    <td>{{ medicine.id }}</td>
+
+                    <td>
+                        <strong>{{ medicine.name }}</strong>
+                    </td>
+
+                    <td>{{ medicine.category }}</td>
+
+                    <td>
+                        {% if medicine.quantity <= medicine.minimum_stock %}
+                            <span class="low">
+                                {{ medicine.quantity }} ⚠️
+                            </span>
+                        {% else %}
+                            <span class="good">
+                                {{ medicine.quantity }}
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ medicine.minimum_stock }}</td>
+
+                    <td>{{ medicine.expiry_date }}</td>
+
+                    <td>₹{{ medicine.price }}</td>
+                    <td>
+
+    <a href="/edit_medicine/{{ medicine.id }}">
+        <button type="button">✏️ Edit</button>
+    </a>
+
+    <form
+        action="/delete_medicine/{{ medicine.id }}"
+        method="POST"
+        style="display:inline;"
+        onsubmit="return confirm('Are you sure you want to delete this medicine?');"
+    >
+        <button type="submit">
+            🗑️ Delete
+        </button>
+    </form>
+
+</td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="7" style="text-align:center;">
+                        No medicines available.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+</body>
+</html>
