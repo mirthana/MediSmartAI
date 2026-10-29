@@ -3,3 +3,4 @@ python-dotenv
 twilio
 APScheduler
 mysql-connector-python
+gunicorn
